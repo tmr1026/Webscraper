@@ -1,0 +1,20 @@
+<div class="container">
+        <div class="row">
+            {{#each Note}}
+            <div class="col s12 m6 l4">
+
+                <div class="card large hoverable">
+                    <div class="card-content">
+                        <div id="{{this.id}}">
+                            
+                            <h5 class="titleinput">Title:{{this.title}} </h5>
+                            <p class="bodyinput">Note:{{this.body}}</p>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            {{/each}}
+        </div>
+    </div>
