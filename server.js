@@ -9,6 +9,7 @@ const app = express();
 
 let router = express.Router();
 
+require("./models")
 require("./config/routes")(router);
 
 app.use(express.static(__dirname + "/public"));
@@ -24,9 +25,9 @@ app.use(bodyParser.urlencoded({
 
 app.use(router);
 
-const db = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines"
+const db = process.env.MONGODB_URI || "mongodb://localhost/Webscraper"
 
-mongoose.connect(db, function(error){
+mongoose.connect(db, { useNewUrlParser: true }, function(error){
   if (error){
     console.log(error)
   }

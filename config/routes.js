@@ -1,28 +1,63 @@
-var cheerio = require("cheerio");
-var axios = require("axios");
+var articlesController = require("../controllers/article");
+var notesController = require("../controllers/notes");
 
-module.exports = function (app) {
-//HTML Routes
-    app.get("/", function (req, res) {
-        db.Article.find({})
-            .then(function (dbArticles) {
-                return res.render("index", {
-                    Article: dbArticles
-                }).then(function (dbNotes) {
-                    return res.render("index", {
-                        Note: dbNotes
-                    })
-                });
-            });
+module.exports = function (router) {
+  router.get("/", function (req, res) {
+    res.render("home");
+  });
+
+  router.get("/api/fetch", function (req, res) {
+    articlesController.fetch(function (err, docs) {
     });
+  });
 
-    app.get("/notes", function (req, res) {
-        db.Note.find({})
-            .then(function (dbNotes) {
-                return res.render("notes", {
-                    Note: dbNotes
-                })
-            });
+  router.get("/api/articles", function (req, res) {
+    var query = {};
+    if (req.query.saved) {
+      query = req.query
+    }
+
+    articlesController.get(query, function (data) {
+      res.json(data);
+    })
+  })
+
+  router.delete("/api/headlines/:id", function (req, res) {
+    var query = {};
+    query._id = req.params.id;
+    articlesController.delete(query, function (err, data) {
+      res.json(data);
     });
+  });
 
-};
+  router.patch("/api/articles", function (req, res) {
+    articlesController.update(req.body, function (err, data) {
+      res.json(data)
+    })
+  })
+
+  router.get("/api/notes/:article_id?", function (req, res) {
+    var query = {};
+    if (req.params.article_id) {
+      query._id = req.params.article_id;
+    }
+
+    notesController.get(query, function (err, data) {
+      res.json(data);
+    });
+  });
+
+  router.delete("/api/notes/:id", function (req, res) {
+    var query = {};
+    query = req.params.id;
+    notesController.delete(query, function (err, data) {
+      res.json(data)
+    });
+  });
+
+  router.post("/api/notes", function (req, res) {
+    notesController.save(req.body, function (data) {
+      res.json(data);
+    });
+  });
+}
